@@ -4,16 +4,21 @@
 
 | Extension | Enabled | Decided At |
 |-----------|---------|------------|
-| Security Baseline | （未決定 — `inception/requirements/requirement-verification-questions.md` の Security Extensions を回答） | — |
+| Security Baseline | いいえ（PoC 段階ではスキップ — `requirement-verification-questions.md` 冒頭・セキュリティ拡張設問に準拠） | 2026-05-07 |
 
 ## Inception Progress
 
 | アーティファクト | ステータス |
 |------------------|------------|
 | Workspace Detection | 完了（グリーンフィールド／ドキュメント中心リポジトリ） |
-| Requirements Analysis | 進行中 — `service-proposal-monku-box.md` ドラフト作成済み |
-| requirement-verification-questions.md | **ユーザー回答待ち** |
+| Requirements Analysis | **完了**（2026-05-07）— `requirement-verification-questions.md` および `service-proposal-monku-box.md` **いずれも承認済み** |
+| requirement-verification-questions.md | **承認済み**（2026-05-07） |
+| service-proposal-monku-box.md | **承認済み**（2026-05-07） |
+| Workflow Planning | **起票済み** — `inception/plans/workflow-plan-monku-box-poc.md` |
+| Application Design | **ドラフト起票済み**（2026-05-07）— `inception/application-design/application-design.md`（ユーザー承認待ち） |
 
 ## 備考
 
-回答反映後、`Extension Configuration` を更新し、必要なら `extensions/security/baseline/security-baseline.md` を読み込んで設計制約に反映する。
+- 要件の正本: `inception/requirements/requirement-verification-questions.md`（詳細）、`service-proposal-monku-box.md`（提案の要約・方針）。
+- アプリケーション設計の正本（PoC）: `inception/application-design/application-design.md`。
+- 本番移行時は `Extension Configuration` を見直し、必要なら Security Baseline 等を有効化する。
