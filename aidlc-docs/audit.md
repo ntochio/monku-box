@@ -253,3 +253,76 @@ Functional Designに移ってください"
 **Context**: Construction / NFR Design
 
 ---
+
+## Infrastructure Design — 実施（NFR Design 承認に続く）
+
+**Timestamp**: 2026-05-08T16:00:00Z
+
+**User Input**: "Continue to Next Stage"
+
+**AI Response**: NFR Design を承認済みとして記録。Infrastructure Design を実施し、`construction/plans/monolith-core-infrastructure-design-plan.md`（Q-I1〜Q-I7）、`construction/monolith-core/infrastructure-design/infrastructure-design.md`、`deployment-architecture.md` を作成。共有インフラは不要のため `shared-infrastructure.md` は未作成。`aidlc-state.md` を更新（Infrastructure Design は成果物作成済み・承認待ち）。
+
+**Context**: Construction / Infrastructure Design
+
+---
+
+## Infrastructure Design — ユーザー承認
+
+**Timestamp**: 2026-05-08T17:00:00Z
+
+**User Input**: "Continue to Next Stage"
+
+**AI Response**: Infrastructure Design を承認済みとして `aidlc-state.md` を更新。
+
+**Context**: Construction / Infrastructure Design — 承認
+
+---
+
+## Code Generation Part 1 — 計画起票
+
+**Timestamp**: 2026-05-08T17:00:00Z
+
+**User Input**: "Continue to Next Stage"
+
+**AI Response**: `aidlc-docs/construction/plans/monolith-core-code-generation-plan.md` を作成（Part 2 実装ステップ Step 1〜14、ストーリー対応表、Part 1 メタチェックリスト）。`aidlc-state.md` に Construction Current Status を追記。Code Generation はワークフローにより **計画全文の明示承認後** に Part 2 へ移行する。
+
+**Context**: Construction / Code Generation — Part 1 Planning
+
+---
+
+## Code Generation — 計画承認依頼（ログ）
+
+**Timestamp**: 2026-05-08T17:00:01Z
+
+**User Input**: （承認依頼をユーザーへ提示する直前の記録）
+
+**AI Response**: 承認依頼プロンプト: 「`monolith-core-code-generation-plan.md` の内容で Part 2（リポジトリルートへのコード生成）を開始してよいか、明示承認を求める。承認文言の例: 計画を承認し実装を開始 / 承認」
+
+**Context**: Construction / Code Generation — Step 6（code-generation.md）
+
+---
+
+## Requirements — 文脈・前提の追記（インフラ・通信）
+
+**Timestamp**: 2026-05-08T18:00:00Z
+
+**User Input**: "インフラの構築と、通信（SOAP, REST, gRPCなど）はPoC段階では深く決めずに進めて将来的に拡張性持たせた実装にするとrequirement-verification-questions.mdに明記してください。
+通信はJson中心で対応します"
+
+**AI Response**: `inception/requirements/requirement-verification-questions.md` の「文脈・前提（重要）」に「### インフラ構築および通信方式について（PoC）」を追加。PoC ではインフラ・通信標準を深く確定しないこと、拡張しやすい実装方針、JSON 中心のデータ表現を明記。
+
+**Context**: Inception / Requirements — 要件確認書の前提更新
+
+---
+
+## Requirements 追記の後続ドキュメント整合
+
+**Timestamp**: 2026-05-08T18:30:00Z
+
+**User Input**: "修正を踏まえて後続のファイルの更新も実施してください"
+
+**AI Response**: 要件確認書の「インフラ構築および通信方式」追記に整合するよう、`service-proposal-monku-box.md`、`application-design.md`、`nfr-requirements.md`（2.9 追加・§4 補足）、`tech-stack-decisions.md`、`infrastructure-design.md` / `deployment-architecture.md`、各種 `construction/plans/*`、`nfr-design` 成果物、`functional-design` の `business-rules.md` / `domain-entities.md`、`workflow-plan-monku-box-poc.md`、`aidlc-state.md` を更新。
+
+**Context**: Requirements — 後続アーティファクト整合
+
+---

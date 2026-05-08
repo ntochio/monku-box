@@ -13,6 +13,7 @@
 - Bounded Context ごとにフロント機能を分離する
 - UI からドメインロジックへ直接依存せず、`application` 層（UseCase）を経由する
 - `domain` は純粋ロジック（ルール/値オブジェクト）を保持し、表示コンポーネントは持たない
+- `infrastructure` の API クライアントは **`/v1/api/...` への HTTP と JSON** を主とする（`requirement-verification-questions.md`「インフラ構築および通信方式」に準拠）
 
 ```text
 App

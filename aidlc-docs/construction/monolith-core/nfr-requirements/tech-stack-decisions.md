@@ -6,6 +6,8 @@
 |------|------|------|
 | アプリ構成 | Next.js モノリス | 実装速度とデモ一貫性を優先 |
 | API バージョン | `/v1/api/...` | 将来の破壊的変更時に `/v2/api/...` へ移行しやすい |
+| API データ形式 | **JSON 中心** | `requirement-verification-questions.md`（インフラ構築および通信方式）。SOAP/gRPC 等の確定は本番移行時 |
+| インフラ・通信標準 | PoC では**深く確定しない** | 最小構成＋アダプタ等で**将来の拡張**に備える（同上） |
 | フロント設計 | DDD 分離（context + layer） | ビジネスロジック分離と保守性確保 |
 | 投稿入力 | テキスト + 音声（ブラウザSTT優先） | UX重視、PoCで実現しやすい |
 | 通知 | アプリ内のみ | PoCで外部連携コストを抑える |
@@ -21,6 +23,7 @@
 ### 2.2 Backend/API
 - Next.js Route Handlers / Server Actions
 - API Prefix: `/v1/api/...`
+- リクエスト/レスポンスの主要ペイロードは **JSON**（`application/json`）。REST リソース設計の厳密化や gRPC 化は本番移行時に再オープン
 
 ### 2.3 Voice / STT
 - 第一候補: ブラウザ機能

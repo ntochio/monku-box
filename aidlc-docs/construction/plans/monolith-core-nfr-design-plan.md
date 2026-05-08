@@ -46,6 +46,10 @@ PoC で論理アーキテクチャに含める補助コンポーネントは？
 
 ---
 
+## 要件確認書との整合（2026-05-08）
+
+`requirement-verification-questions.md` の **「インフラ構築および通信方式について（PoC）」** に従い、論理コンポーネント図は **JSON 中心の HTTP 連携**を前提とし、SOAP/gRPC 等の確定は行わない。
+
 ## トレーサビリティ
 
 | 本計画の [Answer] | 根拠（NFR Requirements Plan） |
