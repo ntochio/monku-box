@@ -15,10 +15,12 @@
 | requirement-verification-questions.md | **承認済み**（2026-05-07） |
 | service-proposal-monku-box.md | **承認済み**（2026-05-07） |
 | Workflow Planning | **起票済み** — `inception/plans/workflow-plan-monku-box-poc.md` |
-| Application Design | **ドラフト起票済み**（2026-05-07）— `inception/application-design/application-design.md`（ユーザー承認待ち） |
+| Application Design | **承認済み**（2026-05-08）— `inception/application-design/application-design.md` |
+| Functional Design | **成果物作成済み（承認待ち）** — `construction/monolith-core/functional-design/` |
 
 ## 備考
 
 - 要件の正本: `inception/requirements/requirement-verification-questions.md`（詳細）、`service-proposal-monku-box.md`（提案の要約・方針）。
 - アプリケーション設計の正本（PoC）: `inception/application-design/application-design.md`。
+- Functional Design 対象ユニット: `inception/application-design/unit-of-work.md`（`monolith-core`）。
 - 本番移行時は `Extension Configuration` を見直し、必要なら Security Baseline 等を有効化する。
