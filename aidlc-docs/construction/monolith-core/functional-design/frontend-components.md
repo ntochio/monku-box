@@ -7,33 +7,48 @@
 - 通知一覧画面（閲覧者/管理者）
 - 管理設定画面（管理者: アカウント追加、辞書更新）
 
-## 2. コンポーネント階層（案）
+## 2. コンポーネント階層（DDD / ビジネスロジック分離）
+
+### 設計方針
+- Bounded Context ごとにフロント機能を分離する
+- UI からドメインロジックへ直接依存せず、`application` 層（UseCase）を経由する
+- `domain` は純粋ロジック（ルール/値オブジェクト）を保持し、表示コンポーネントは持たない
 
 ```text
-AppShell
-├─ AuthGate
-├─ SubmitPage
-│  ├─ TopicSelector
-│  ├─ TopicCreateInput
-│  ├─ VoiceRecorder
-│  ├─ TranscriptEditor
-│  ├─ MessageInput
-│  └─ SubmitButton
-├─ DashboardPage
-│  ├─ TopicCountChart
-│  ├─ SuggestionCardList
-│  └─ MessageListPanel
-├─ NotificationPage
-│  └─ NotificationList
-└─ AdminPage
-   ├─ AccountCreateForm
-   └─ PolicyDictionaryForm
+App
+├─ shared/
+│  ├─ ui/                 # 汎用 UI 部品（Button, Modal, Toast）
+│  ├─ lib/                # 日付/文字列など共通ユーティリティ
+│  └─ auth/               # AuthGate, session helper
+├─ contexts/
+│  ├─ submission/         # 投稿コンテキスト
+│  │  ├─ presentation/    # SubmitPage, TopicSelector, VoiceRecorder, TranscriptEditor
+│  │  ├─ application/     # submitMessageUseCase, transcribeVoiceUseCase
+│  │  ├─ domain/          # MessageDraft, TopicSelection, PolicyPreview ルール
+│  │  └─ infrastructure/  # /v1/api/messages, /v1/api/topics, /v1/api/voice/transcribe client
+│  ├─ dashboard/          # 可視化コンテキスト
+│  │  ├─ presentation/    # DashboardPage, TopicCountChart, SuggestionCardList, MessageListPanel
+│  │  ├─ application/     # loadDashboardSummaryUseCase
+│  │  ├─ domain/          # TopicTrend, Suggestion モデル
+│  │  └─ infrastructure/  # /v1/api/dashboard/summary, /v1/api/messages client
+│  ├─ notification/       # 通知コンテキスト
+│  │  ├─ presentation/    # NotificationPage, NotificationList
+│  │  ├─ application/     # loadNotificationsUseCase
+│  │  ├─ domain/          # NotificationItem, NotificationRule
+│  │  └─ infrastructure/  # /v1/api/notifications client
+│  └─ admin/              # 管理コンテキスト
+│     ├─ presentation/    # AdminPage, AccountCreateForm, PolicyDictionaryForm
+│     ├─ application/     # createAccountUseCase, updatePolicyDictionaryUseCase
+│     ├─ domain/          # AccountRoleRule, DictionaryPolicy
+│     └─ infrastructure/  # admin APIs client
+└─ app-shell/             # レイアウトとルーティング
 ```
 
-## 3. コンポーネント仕様（主要）
+## 3. コンポーネント仕様（主要 / DDD対応）
 
-### SubmitPage
-- 責務: 投稿入力の完了と送信
+### SubmitPage（submission/presentation）
+- 責務: 投稿入力の完了と送信（UI オーケストレーション）
+- 依存: `submitMessageUseCase` / `transcribeVoiceUseCase`
 - 状態:
   - `selectedTopicId`
   - `newTopicLabel`
@@ -44,40 +59,43 @@ AppShell
   - topic は既存選択または新規追加で必須化
   - 音声入力後、送信前に必ず文字起こし編集を挟む
 
-### TopicSelector / TopicCreateInput
+### TopicSelector / TopicCreateInput（submission/presentation）
 - 責務: topic 指定
 - ルール:
   - 新規 topic 入力を許可
-  - 完全一致 topic は既存に寄せる（バックエンド最終判定）
+  - 完全一致 topic は既存に寄せる（application/domain ルールに従い最終判定）
 
-### VoiceRecorder
+### VoiceRecorder（submission/presentation）
 - 責務: 録音開始/停止
 - 方式:
   - 録音開始/停止ボタン
   - ブラウザ STT 優先
 
-### TranscriptEditor
+### TranscriptEditor（submission/presentation）
 - 責務: STT 結果とサマリーの確認/編集
 - ルール:
   - 送信前編集必須
 
-### DashboardPage
+### DashboardPage（dashboard/presentation）
 - 責務: 閲覧者/管理者向け可視化
+- 依存: `loadDashboardSummaryUseCase`
 - 表示:
   - topic 別件数
   - 改善提案カード（topic 単位、根拠付き）
 - ロール:
   - 投稿者はアクセス不可
 
-### NotificationList
+### NotificationList（notification/presentation）
 - 責務: 通知表示
+- 依存: `loadNotificationsUseCase`
 - ルール:
   - 受信対象は閲覧者・管理者
   - 投稿者は画面非表示
   - PoC は履歴一覧中心、即時イベント反映
 
-### AccountCreateForm（Admin）
+### AccountCreateForm（admin/presentation）
 - 責務: アカウント追加
+- 依存: `createAccountUseCase`
 - バリデーション:
   - メール形式
   - ロール指定必須

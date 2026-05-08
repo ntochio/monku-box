@@ -16,7 +16,9 @@
 | service-proposal-monku-box.md | **承認済み**（2026-05-07） |
 | Workflow Planning | **起票済み** — `inception/plans/workflow-plan-monku-box-poc.md` |
 | Application Design | **承認済み**（2026-05-08）— `inception/application-design/application-design.md` |
-| Functional Design | **成果物作成済み（承認待ち）** — `construction/monolith-core/functional-design/` |
+| Functional Design | **承認済み**（2026-05-08）— `construction/monolith-core/functional-design/` |
+| NFR Requirements | **承認済み**（2026-05-08）— `construction/monolith-core/nfr-requirements/` |
+| NFR Design | **成果物作成済み（承認待ち）** — `construction/monolith-core/nfr-design/`、`construction/plans/monolith-core-nfr-design-plan.md` |
 
 ## 備考
 

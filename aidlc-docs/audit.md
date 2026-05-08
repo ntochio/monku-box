@@ -205,3 +205,51 @@ Functional Designに移ってください"
 **Context**: Construction / Functional Design — Approval Prompt
 
 ---
+
+## Functional Design — Frontend DDD 階層への再編
+
+**Timestamp**: 2026-05-08T10:17:48Z
+
+**User Input**: "コンポーネント階層をビジネスロジック分けでお願いします設計思想はDDDでお願いします"
+
+**AI Response**: `aidlc-docs/construction/monolith-core/functional-design/frontend-components.md` を更新。コンポーネント階層を DDD 前提の Bounded Context + Layer（presentation/application/domain/infrastructure）構造に再編し、主要コンポーネント仕様へ UseCase 依存を明記。
+
+**Context**: Construction / Functional Design — Frontend設計方針更新
+
+---
+
+## Functional Design — ユーザー承認
+
+**Timestamp**: 2026-05-08T10:23:59Z
+
+**User Input**: "Continue to Next Stage"
+
+**AI Response**: Functional Design を承認として記録し、次段階の NFR Requirements へ移行。
+
+**Context**: Construction / Functional Design — 承認
+
+---
+
+## NFR Requirements — 実施
+
+**Timestamp**: 2026-05-08T10:23:59Z
+
+**User Input**: （Functional Design 承認後の継続指示）
+
+**AI Response**: `construction/plans/monolith-core-nfr-requirements-plan.md` を起票し、既存回答を反映。`construction/monolith-core/nfr-requirements/nfr-requirements.md` と `tech-stack-decisions.md` を作成。`aidlc-state.md` を更新（NFR Requirements は成果物作成済み・承認待ち）。
+
+**Context**: Construction / NFR Requirements
+
+---
+
+## NFR Design — 実施（NFR Requirements 承認に続く）
+
+**Timestamp**: 2026-05-08T15:30:00Z
+
+**User Input**: "Continue to Next Stage"
+
+**AI Response**: NFR Requirements を承認済みとして記録。NFR Design を実施し、`construction/plans/monolith-core-nfr-design-plan.md`（Q-D1〜Q-D5 の [Answer] を NFR Requirements Plan にトレース）、`construction/monolith-core/nfr-design/nfr-design-patterns.md`、`construction/monolith-core/nfr-design/logical-components.md` を作成。`aidlc-state.md` を更新（NFR Design は成果物作成済み・承認待ち）。
+
+**Context**: Construction / NFR Design
+
+---
