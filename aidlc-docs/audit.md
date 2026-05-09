@@ -350,3 +350,111 @@ Functional Designに移ってください"
 **Context**: Git merge / ドキュメント整合 — 完了確認
 
 ---
+
+## Code Generation — 計画承認
+
+**Timestamp**: 2026-05-09T14:00:00Z
+
+**User Input**: "monolith-core-code-generation-planを承認します"
+
+**AI Response**: `construction/plans/monolith-core-code-generation-plan.md` の Part 1 メタチェックリスト「ユーザーが本計画全体を承認した」を [x] に更新。`aidlc-state.md` を Code Generation Part 2 実施中に更新。
+
+**Context**: Construction / Code Generation — Part 1 承認
+
+---
+
+## Code Generation Part 2 — Step 1（プロジェクト基盤）
+
+**Timestamp**: 2026-05-09T14:15:00Z
+
+**User Input**: （`monolith-core-code-generation-plan` 承認に続く実施）
+
+**AI Response**: リポジトリルートに Next.js 16（App Router, TS, Tailwind, ESLint）を配置。`package.json`（`monku-box`, scripts 含む `test`）、`vitest` + `src/smoke.test.ts`、`.env.example`、`.gitignore` マージ、`README.md` 起票。`npm run lint` / `test` / `build` 成功を確認。`monolith-core-code-generation-plan.md` の Step 1 を [x]。
+
+**Context**: Construction / Code Generation — Part 2 Step 1
+
+---
+
+## Code Generation Part 2 — Step 2〜14 実装
+
+**Timestamp**: 2026-05-09T15:00:00Z
+
+**User Input**: "Step 2 から続けて実装"
+
+**AI Response**: `src/domain` / `application` / `infrastructure` / `contexts/*`（DDD レイヤ枠＋presentation）、JSON 永続化、Policy、認可（`X-Monku-Role`）、`/v1/api/*` Route Handlers、投稿・ダッシュボード・通知・管理 UI、Vitest（Policy・ストア・messages API）、`code-generation-summary.md`、README 手動スモーク・API 表を追加。`monolith-core-code-generation-plan.md` Step 2〜14 を [x]。`aidlc-state.md` を Code Generation 成果物作成済み（承認待ち）に更新。
+
+**Context**: Construction / Code Generation — Part 2 完了（承認待ち）
+
+---
+
+## Functional Design — frontend-components.md（論理と PoC 実装の整合明記）
+
+**Timestamp**: 2026-05-09T16:00:00Z
+
+**User Input**: "今の実装で問題ないと思ってるんですが、frontend-components.mdとの差分があるように見えるのでfrontend-components.mdに明記もしくは修正してください"
+
+**AI Response**: `construction/monolith-core/functional-design/frontend-components.md` に §2.1（論理構成と PoC 実装の対応表・結論）、§2.2（論理ツリー参照用・notifications 表記）、設計方針と §3 の「論理 vs PoC」注記、§7 変更履歴を追加。§4 API 表の NotificationPage を NotificationList に統一。
+
+**Context**: Construction / Functional Design — ドキュメント整合
+
+---
+
+## Workflow Planning — ユーザー承認
+
+**Timestamp**: 2026-05-08T12:00:00Z
+
+**User Input**: "Workflow Planningを承認してください 続けてUserStoryを確認したいです"
+
+**AI Response**: `inception/plans/workflow-plan-monku-box-poc.md` の承認セクションを承認済み（2026-05-08）に更新。`aidlc-state.md` の Workflow Planning を承認済みに更新。User Stories Part 1 として `inception/plans/user-stories-assessment.md`（実施判定 Yes）と `inception/plans/story-generation-plan.md`（Part 2 チェックリスト・設問）を起票。User Stories 行を Part 1 進行中に追加。
+
+**Context**: Inception / Workflow Planning 承認、User Stories Part 1 起票
+
+---
+
+## User Stories Part 1 — 計画承認プロンプト（記録）
+
+**Timestamp**: 2026-05-08T12:00:00Z
+
+**User Input**: （記録用プロンプト本文）
+
+**AI Response**: 以下をユーザーへ提示する前提で記録する — 「`aidlc-docs/inception/plans/story-generation-plan.md` の設問 1〜5 の `[Answer]:` をすべて記入し、曖昧さがあれば追記で解消したうえで、本ストーリー生成計画全体の承認（Request Changes または承認の明示）をください。承認後に Part 2 で `inception/user-stories/personas.md` と `stories.md` を生成する。」
+
+**Context**: Inception / User Stories Part 1 — Step 12 相当（承認プロンプトの監査ログ）
+
+---
+
+## User Stories — story-generation-plan 承認
+
+**Timestamp**: 2026-05-08T12:30:00Z
+
+**User Input**: "story-generation-plan.mdを承認します"
+
+**AI Response**: Part 2 を実行。`inception/user-stories/personas.md`（P1〜P3・標準詳細度）と `stories.md`（エピック 1〜3・ストーリー 1.1〜3.2・箇条書き受け入れ基準・音声ストーリーに Web Speech API / 501 STT の技術基準・Out of scope 節・ペルソナ対応表・マップ照合）を生成。`story-generation-plan.md` の Part 2 チェックリストと必須成果物をすべて [x]。`aidlc-state.md` の User Stories を成果物作成済み（承認待ち）に更新。
+
+**Context**: Inception / User Stories — Part 1 計画承認および Part 2 成果物生成
+
+---
+
+## User Stories Part 2 — レビュー依頼プロンプト（記録）
+
+**Timestamp**: 2026-05-08T12:30:00Z
+
+**User Input**: （記録用）
+
+**AI Response**: `user-stories.md` Step 19/20 に準じ、ユーザーへ `aidlc-docs/inception/user-stories/stories.md` および `personas.md` のレビューと、変更依頼または承認の明示を求める。
+
+**Context**: Inception / User Stories — 生成物レビュー前の監査ログ
+
+---
+
+## User Stories — 生成物のユーザー承認
+
+**Timestamp**: 2026-05-08T13:00:00Z
+
+**User Input**: "承認"
+
+**AI Response**: `aidlc-state.md` の User Stories を承認済み（2026-05-08）に更新。備考にユーザーストーリー・ペルソナの正本パスを追記。
+
+**Context**: Inception / User Stories — Step 21/22 相当（生成物の明示承認）
+
+---
