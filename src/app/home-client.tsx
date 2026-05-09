@@ -5,7 +5,7 @@ import type { Role } from "@/domain/role";
 import { usePocRole, usePocRoleSetter } from "@/lib/poc-role";
 
 const nav = [
-  { href: "/submit", label: "投稿", hint: "topic と本文（音声可）", testId: "home-link-submit" },
+  { href: "/submit", label: "投稿", hint: "topic と投稿内容（文字起こし欄に音声／テキスト）", testId: "home-link-submit" },
   { href: "/messages", label: "メッセージ一覧", hint: "閲覧者・管理者", testId: "home-link-messages" },
   { href: "/dashboard", label: "ダッシュボード", hint: "集計と改善提案", testId: "home-link-dashboard" },
   { href: "/notifications", label: "通知", hint: "閲覧者・管理者", testId: "home-link-notifications" },
