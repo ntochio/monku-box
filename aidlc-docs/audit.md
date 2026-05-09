@@ -326,3 +326,15 @@ Functional Designに移ってください"
 **Context**: Requirements — 後続アーティファクト整合
 
 ---
+
+## Git — マージコンフリクト解消
+
+**Timestamp**: 2026-05-08T20:00:00Z
+
+**User Input**: "Resolve these 23 merge conflicts across 17 files @Branch"
+
+**AI Response**: `<<<<<<< HEAD` / `=======` / `>>>>>>> origin/develop` を全 `aidlc-docs/` 配下から除去。HEAD 側（PoC でインフラ・通信を深く確定しない／JSON 中心／Construction 進捗・監査ログの後続エントリ等）を採用。`nfr-requirements.md` は §2.8 Usability を §2.9 Interoperability より前に並べ替え（番号の自然順）。
+
+**Context**: Git merge / ドキュメント整合
+
+---
