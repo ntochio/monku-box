@@ -458,3 +458,63 @@ Functional Designに移ってください"
 **Context**: Inception / User Stories — Step 21/22 相当（生成物の明示承認）
 
 ---
+
+## Code Generation（monolith-core）— 生成成果物のユーザー承認
+
+**Timestamp**: 2026-05-08T14:00:00Z
+
+**User Input**: "成果物承認します"
+
+**AI Response**: `aidlc-state.md` の Code Generation（monolith-core）を承認済み（2026-05-08）に更新。Construction Current Status を Build & Test 進行中に更新。`construction/plans/monolith-core-code-generation-plan.md` に Part 2 成果物承認チェック [x] を追加。
+
+**Context**: Construction / Code Generation — Step 15/16 相当（生成コード・サマリの明示承認）
+
+---
+
+## Build and Test Stage
+
+**Timestamp**: 2026-05-08T14:30:00Z
+
+**User Input**: "進めてください"
+
+**Build Status**: Success（`npm run lint`、`npm run build`）
+
+**Test Status**: Pass（`npm test` — Vitest 4 files / 8 tests passed）
+
+**Files Generated**:
+
+- `aidlc-docs/construction/build-and-test/build-instructions.md`
+- `aidlc-docs/construction/build-and-test/unit-test-instructions.md`
+- `aidlc-docs/construction/build-and-test/integration-test-instructions.md`
+- `aidlc-docs/construction/build-and-test/performance-test-instructions.md`
+- `aidlc-docs/construction/build-and-test/build-and-test-summary.md`
+
+**AI Response**: 上記を作成。リポジトリルートで `npm install` 後に lint / test / build を実行し成功をサマリに反映。`aidlc-state.md` に Build & Test 行および Construction Current Status を更新。
+
+**Context**: Construction / Build and Test — 手順書起票および一次検証
+
+---
+
+## Build and Test — Operations 移行承認プロンプト（記録）
+
+**Timestamp**: 2026-05-08T14:30:00Z
+
+**User Input**: （記録用プロンプト本文）
+
+**AI Response**: AGENTS.md に準じ、ユーザーへ次を提示する — 「**Build and test instructions complete. Ready to proceed to Operations stage?**」
+
+**Context**: Construction / Build and Test — 明示承認待ちの監査ログ
+
+---
+
+## Build and Test — Operations 移行のユーザー承認
+
+**Timestamp**: 2026-05-08T15:00:00Z
+
+**User Input**: "承認します"
+
+**AI Response**: `aidlc-state.md` の Build & Test を承認済みに更新。Construction をフェーズ完了とし、Operations Progress 表を追加（プレースホルダ・移行承認済み）。`build-and-test-summary.md` の Ready for Operations を Yes に更新。
+
+**Context**: Construction / Build and Test — AGENTS.md の「Ready to proceed to Operations stage?」への明示承認
+
+---
