@@ -398,3 +398,63 @@ Functional Designに移ってください"
 **Context**: Construction / Functional Design — ドキュメント整合
 
 ---
+
+## Workflow Planning — ユーザー承認
+
+**Timestamp**: 2026-05-08T12:00:00Z
+
+**User Input**: "Workflow Planningを承認してください 続けてUserStoryを確認したいです"
+
+**AI Response**: `inception/plans/workflow-plan-monku-box-poc.md` の承認セクションを承認済み（2026-05-08）に更新。`aidlc-state.md` の Workflow Planning を承認済みに更新。User Stories Part 1 として `inception/plans/user-stories-assessment.md`（実施判定 Yes）と `inception/plans/story-generation-plan.md`（Part 2 チェックリスト・設問）を起票。User Stories 行を Part 1 進行中に追加。
+
+**Context**: Inception / Workflow Planning 承認、User Stories Part 1 起票
+
+---
+
+## User Stories Part 1 — 計画承認プロンプト（記録）
+
+**Timestamp**: 2026-05-08T12:00:00Z
+
+**User Input**: （記録用プロンプト本文）
+
+**AI Response**: 以下をユーザーへ提示する前提で記録する — 「`aidlc-docs/inception/plans/story-generation-plan.md` の設問 1〜5 の `[Answer]:` をすべて記入し、曖昧さがあれば追記で解消したうえで、本ストーリー生成計画全体の承認（Request Changes または承認の明示）をください。承認後に Part 2 で `inception/user-stories/personas.md` と `stories.md` を生成する。」
+
+**Context**: Inception / User Stories Part 1 — Step 12 相当（承認プロンプトの監査ログ）
+
+---
+
+## User Stories — story-generation-plan 承認
+
+**Timestamp**: 2026-05-08T12:30:00Z
+
+**User Input**: "story-generation-plan.mdを承認します"
+
+**AI Response**: Part 2 を実行。`inception/user-stories/personas.md`（P1〜P3・標準詳細度）と `stories.md`（エピック 1〜3・ストーリー 1.1〜3.2・箇条書き受け入れ基準・音声ストーリーに Web Speech API / 501 STT の技術基準・Out of scope 節・ペルソナ対応表・マップ照合）を生成。`story-generation-plan.md` の Part 2 チェックリストと必須成果物をすべて [x]。`aidlc-state.md` の User Stories を成果物作成済み（承認待ち）に更新。
+
+**Context**: Inception / User Stories — Part 1 計画承認および Part 2 成果物生成
+
+---
+
+## User Stories Part 2 — レビュー依頼プロンプト（記録）
+
+**Timestamp**: 2026-05-08T12:30:00Z
+
+**User Input**: （記録用）
+
+**AI Response**: `user-stories.md` Step 19/20 に準じ、ユーザーへ `aidlc-docs/inception/user-stories/stories.md` および `personas.md` のレビューと、変更依頼または承認の明示を求める。
+
+**Context**: Inception / User Stories — 生成物レビュー前の監査ログ
+
+---
+
+## User Stories — 生成物のユーザー承認
+
+**Timestamp**: 2026-05-08T13:00:00Z
+
+**User Input**: "承認"
+
+**AI Response**: `aidlc-state.md` の User Stories を承認済み（2026-05-08）に更新。備考にユーザーストーリー・ペルソナの正本パスを追記。
+
+**Context**: Inception / User Stories — Step 21/22 相当（生成物の明示承認）
+
+---
