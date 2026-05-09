@@ -3,7 +3,7 @@
 ## 1. 画面構成
 
 - 投稿画面（テキスト/音声）
-- ダッシュボード画面（topic 別件数 + 改善提案カード）
+- ダッシュボード画面（topic 別件数の**円グラフ**・UTC 日別の**棒グラフ**・件数リスト + 改善提案カード）
 - 通知一覧画面（閲覧者/管理者）
 - 管理設定画面（管理者: アカウント追加、辞書更新）
 
@@ -24,7 +24,7 @@
 | 論理（本節の図） | PoC 実装での扱い |
 |------------------|------------------|
 | `app-shell/`（レイアウト・ルーティング） | Next.js 慣習に合わせ **`src/app/`** に配置（名称は `app-shell` とはしない） |
-| `shared/` | 汎用コードは **`src/lib/`**（例: `client-api.ts`, `poc-role.ts`, `http/`）に集約。`shared/ui` 相当の部品は未分割のまま各 presentation に内包してよい |
+| `shared/` | 汎用コードは **`src/lib/`**（例: `client-api.ts`, `poc-role.ts`, **`voice-recognition.ts`**（Web Speech 補助）, `http/`）に集約。`shared/ui` 相当の部品は未分割のまま各 presentation に内包してよい |
 | 各 BC の `application` / `domain` / `infrastructure`（フロント専用） | **サーバ側のユースケース・ドメイン・永続化は**リポジトリ直下の **`src/application/`・`src/domain/`・`src/infrastructure/`** に集約（モノリス 1 本）。各 `src/contexts/<bc>/application|domain|infrastructure` は **レイヤの「置き場」としての枠**（PoC では空でもよい） |
 | 各 BC の `infrastructure`（API クライアント） | PoC では **`monkuFetch` + `/v1/api/...`** を presentation から呼ぶ形を許容。将来、BC ごとに `infrastructure/api.ts` へ切り出してよい |
 | `presentation` 内の細かいコンポーネント名 | 設計上は `TopicSelector` 等に分割可能だが、**1 ファイルに集約（例: `SubmitForm`）** してもよい |
@@ -86,7 +86,9 @@ App（論理）
   - `policyPreview`
 - ルール:
   - topic は既存選択または新規追加で必須化
-  - 音声入力後、送信前に必ず文字起こし編集を挟む
+  - **音声**: Web Speech API（`SpeechRecognition` / `webkitSpeechRecognition`）、言語 `ja-JP`、`continuous` + `interimResults` で複数発話を受け、**「認識を停止」**でセッション終了。確定結果を文字起こし欄へ反映（**追記モード**で要件 Q106「投稿前に何度でも」に対応／オフで直近確定のみ上書き）
+  - 送信前に文字起こしを編集可能（必須の確認ステップ）
+  - マイク拒否・`no-speech` 等はメッセージで案内しテキストへフォールバック
 
 ### TopicSelector / TopicCreateInput（submission/presentation）
 - 責務: topic 指定
@@ -95,21 +97,27 @@ App（論理）
   - 完全一致 topic は既存に寄せる（application/domain ルールに従い最終判定）
 
 ### VoiceRecorder（submission/presentation）
-- 責務: 録音開始/停止
+- 責務: ブラウザ音声認識の開始・停止（論理コンポーネント）。**PoC 実装**では `SubmitForm` 内に統合
 - 方式:
-  - 録音開始/停止ボタン
-  - ブラウザ STT 優先
+  - **開始** / **認識を停止** ボタン、`listening` 状態
+  - `getSpeechRecognitionConstructor()`（`src/lib/voice-recognition.ts`）で API 有無を判定
+  - 非対応ブラウザ・HTTPS でない環境では案内文を表示
+  - サーバ `POST /v1/api/voice/transcribe` は **未使用**（501 のまま）。主経路はクライアント STT のみ
 
 ### TranscriptEditor（submission/presentation）
-- 責務: STT 結果とサマリーの確認/編集
+- 責務: STT 結果の確認/編集
 - ルール:
-  - 送信前編集必須
+  - 確定テキストは常に編集可能なテキストエリアに載せる
+  - 認識中は中間結果を別表示（任意）
 
 ### DashboardPage（dashboard/presentation）
 - 責務: 閲覧者/管理者向け可視化
 - 依存（論理）: `loadDashboardSummaryUseCase`。**PoC 実装**では `DashboardPanel` + `monkuFetch` でよい（§2.1）
+- 子（PoC 実装例）: `TopicPieChart`（topic 別件数の円グラフ）、`MessagesTimelineBarChart`（`messagesByDay` の棒グラフ）、件数リスト、改善提案カード
 - 表示:
-  - topic 別件数
+  - topic 別件数（**円グラフ**・凡例、件数 0 の topic は円に含めない）
+  - **UTC 暦日**ごとの全メッセージ件数（**棒グラフ**、`/v1/api/dashboard/summary` の `messagesByDay`）
+  - topic 別件数のテキスト一覧
   - 改善提案カード（topic 単位、根拠付き）
 - ロール:
   - 投稿者はアクセス不可
@@ -138,7 +146,7 @@ App（論理）
 | SubmitPage | `POST /v1/api/messages` | 投稿送信 |
 | TopicSelector/TopicCreateInput | `GET/POST /v1/api/topics` | topic 取得/追加 |
 | VoiceRecorder | `POST /v1/api/voice/transcribe`（任意） | 音声→テキスト |
-| DashboardPage | `GET /v1/api/dashboard/summary` | 集計取得 |
+| DashboardPage | `GET /v1/api/dashboard/summary` | 集計取得（`topicCounts`、`messagesByDay`、suggestions） |
 | MessageListPanel | `GET /v1/api/messages` | 投稿一覧 |
 | NotificationList | `GET /v1/api/notifications` | 通知一覧 |
 
@@ -153,7 +161,7 @@ App（論理）
 
 1. 投稿者は topic を選択または追加する。
 2. テキスト入力または音声入力を行う。
-3. 音声時は文字起こし・サマリーを確認編集する。
+3. 音声時は **認識を停止** し、文字起こしを確認・編集する。
 4. 投稿送信後、閲覧者/管理者のダッシュボード・通知に反映される。
 
 ---
@@ -162,4 +170,6 @@ App（論理）
 
 | 日付 | 内容 |
 |------|------|
+| 2026-05-09 | 音声入力: Web Speech API の本実装を `SubmitForm` + `lib/voice-recognition.ts` に整理（追認・停止・エラー文言・単体テスト）。§3 VoiceRecorder / TranscriptEditor を実装に合わせて更新。 |
+| 2026-05-09 | ダッシュボードに **円グラフ／棒グラフ**（`TopicPieChart`、`MessagesTimelineBarChart`）と `messagesByDay` を追記（§1・§3・§4）。 |
 | 2026-05-09 | §2.1 を追加。論理ツリーと PoC 実装（`src/app`・`src/lib`・集約された `src/application` 等）の差を **意図的な許容**として明記。`notification` を `notifications` に統一（実装パスに合わせる）。§2.2 を論理ツリーとして再掲。 |

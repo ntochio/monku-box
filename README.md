@@ -32,10 +32,17 @@ API は **`X-Monku-Role`** ヘッダでロールを受け取ります（`submitt
 | `npm run lint` | ESLint |
 | `npm run test` | Vitest |
 
+### 音声入力（投稿画面）
+
+- **Chrome / Edge**（Chromium 系）推奨。`localhost` または **HTTPS** で開き、マイク許可を与えてください。
+- **音声入力を開始** → 話す → **認識を停止**。文字起こし欄を確認・編集してから topic を選び **送信**。
+- **追記**チェックをオンにすると、複数回の発話を 1 本文に足せます（オフのときは直近の確定結果で上書き）。
+- サーバ側の `POST /v1/api/voice/transcribe` は PoC では使いません（501）。認識はブラウザ内で完結します。
+
 ## 手動スモーク（E2E なしの最小確認）
 
 1. `npm run dev` で起動。
-2. ホームでロール **投稿者** → **投稿** で topic＋本文を送信。
+2. ホームでロール **投稿者** → **投稿** で topic＋本文を送信（可能なら音声入力も試す）。
 3. ホームで **閲覧者** → **ダッシュボード** で件数・提案カードを確認。
 4. **通知** で新規投稿通知を確認し、**既読** を試す。
 5. ホームで **管理者** → **管理** でアカウント追加・禁止語の保存を試す。
@@ -55,7 +62,7 @@ API は **`X-Monku-Role`** ヘッダでロールを受け取ります（`submitt
 | POST | `/v1/api/notifications/:id/read` | 既読 |
 | GET/POST | `/v1/api/accounts` | 管理者（一覧・追加） |
 | GET/POST | `/v1/api/policy/words` | 管理者（禁止語） |
-| POST | `/v1/api/voice/transcribe` | 501（ブラウザ STT 優先） |
+| POST | `/v1/api/voice/transcribe` | 501（PoC はブラウザ Web Speech API を使用。サーバ STT は将来差し替え） |
 
 ## ドキュメント
 
