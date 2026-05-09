@@ -338,3 +338,15 @@ Functional Designに移ってください"
 **Context**: Git merge / ドキュメント整合
 
 ---
+
+## Git — マージコンフリクト解消（実施完了）
+
+**Timestamp**: 2026-05-09T12:00:00Z
+
+**User Input**: "Resolve these 23 merge conflicts across 17 files @Branch"
+
+**AI Response**: `aidlc-docs/` 配下の残余コンフリクトマーカーをすべて除去。HEAD 側を採用（PoC のインフラ・通信未確定／JSON 中心、`aidlc-state.md` の Construction 進捗、`audit.md` の Infrastructure Design〜、`application-design`・`requirement-verification-questions`・`service-proposal`・各 `construction/plans`・`functional-design`・`nfr-*` の追記を統合）。
+
+**Context**: Git merge / ドキュメント整合 — 完了確認
+
+---
