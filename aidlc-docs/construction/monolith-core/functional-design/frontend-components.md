@@ -11,12 +11,40 @@
 
 ### 設計方針
 - Bounded Context ごとにフロント機能を分離する
-- UI からドメインロジックへ直接依存せず、`application` 層（UseCase）を経由する
+- UI からドメインロジックへ直接依存せず、`application` 層（UseCase）を経由する（**論理上の依存方向**。PoC 実装での物理配置は §2.1 参照）
 - `domain` は純粋ロジック（ルール/値オブジェクト）を保持し、表示コンポーネントは持たない
 - `infrastructure` の API クライアントは **`/v1/api/...` への HTTP と JSON** を主とする（`requirement-verification-questions.md`「インフラ構築および通信方式」に準拠）
 
+### 2.1 論理構成と PoC 実装の対応（明記）
+
+以下のツリーは **論理上のレイヤ分離（目標アーキテクチャ）** を示す。**PoC の monolith-core 実装はこのツリーとファイルを 1:1 で一致させることを求めない**。実装の正本パス・構成は `construction/monolith-core/code/code-generation-summary.md` およびリポジトリの `src/` を参照する。
+
+**意図的に採用している PoC の割り切り**（いずれも許容範囲）:
+
+| 論理（本節の図） | PoC 実装での扱い |
+|------------------|------------------|
+| `app-shell/`（レイアウト・ルーティング） | Next.js 慣習に合わせ **`src/app/`** に配置（名称は `app-shell` とはしない） |
+| `shared/` | 汎用コードは **`src/lib/`**（例: `client-api.ts`, `poc-role.ts`, `http/`）に集約。`shared/ui` 相当の部品は未分割のまま各 presentation に内包してよい |
+| 各 BC の `application` / `domain` / `infrastructure`（フロント専用） | **サーバ側のユースケース・ドメイン・永続化は**リポジトリ直下の **`src/application/`・`src/domain/`・`src/infrastructure/`** に集約（モノリス 1 本）。各 `src/contexts/<bc>/application|domain|infrastructure` は **レイヤの「置き場」としての枠**（PoC では空でもよい） |
+| 各 BC の `infrastructure`（API クライアント） | PoC では **`monkuFetch` + `/v1/api/...`** を presentation から呼ぶ形を許容。将来、BC ごとに `infrastructure/api.ts` へ切り出してよい |
+| `presentation` 内の細かいコンポーネント名 | 設計上は `TopicSelector` 等に分割可能だが、**1 ファイルに集約（例: `SubmitForm`）** してもよい |
+| BC フォルダ名 `notification` | リポジトリ上は **`notifications`**（複数形）を使用 |
+
+**責務の対応（論理 → 実装の見かけ）**:
+
+| BC（論理） | presentation（実装例） | ルート（`src/app`） |
+|------------|-------------------------|---------------------|
+| submission | `contexts/submission/presentation/SubmitForm.tsx` 等 | `/submit` |
+| dashboard | `contexts/dashboard/presentation/DashboardPanel.tsx` 等 | `/dashboard` |
+| notifications | `contexts/notifications/presentation/NotificationList.tsx` 等 | `/notifications` |
+| admin | `contexts/admin/presentation/AdminPanel.tsx` 等 | `/admin` |
+
+**結論**: 本ドキュメントは **画面責務・API 対応・DDD の依存方向** を定義する。ディレクトリの完全一致は PoC の完了条件としない。拡張時は論理図に近づけるよう、クライアント側の `application` / `infrastructure` を BC 配下へ段階的に移してよい。
+
+### 2.2 論理ディレクトリツリー（参照用）
+
 ```text
-App
+App（論理）
 ├─ shared/
 │  ├─ ui/                 # 汎用 UI 部品（Button, Modal, Toast）
 │  ├─ lib/                # 日付/文字列など共通ユーティリティ
@@ -24,32 +52,32 @@ App
 ├─ contexts/
 │  ├─ submission/         # 投稿コンテキスト
 │  │  ├─ presentation/    # SubmitPage, TopicSelector, VoiceRecorder, TranscriptEditor
-│  │  ├─ application/     # submitMessageUseCase, transcribeVoiceUseCase
-│  │  ├─ domain/          # MessageDraft, TopicSelection, PolicyPreview ルール
-│  │  └─ infrastructure/  # /v1/api/messages, /v1/api/topics, /v1/api/voice/transcribe client
+│  │  ├─ application/     # submitMessageUseCase, transcribeVoiceUseCase（クライアント側・任意）
+│  │  ├─ domain/          # MessageDraft, TopicSelection, PolicyPreview ルール（クライアント側・任意）
+│  │  └─ infrastructure/  # /v1/api/messages, /v1/api/topics, /v1/api/voice/transcribe client（任意）
 │  ├─ dashboard/          # 可視化コンテキスト
 │  │  ├─ presentation/    # DashboardPage, TopicCountChart, SuggestionCardList, MessageListPanel
-│  │  ├─ application/     # loadDashboardSummaryUseCase
-│  │  ├─ domain/          # TopicTrend, Suggestion モデル
-│  │  └─ infrastructure/  # /v1/api/dashboard/summary, /v1/api/messages client
-│  ├─ notification/       # 通知コンテキスト
+│  │  ├─ application/     # loadDashboardSummaryUseCase（任意）
+│  │  ├─ domain/          # TopicTrend, Suggestion モデル（任意）
+│  │  └─ infrastructure/  # /v1/api/dashboard/summary, /v1/api/messages client（任意）
+│  ├─ notifications/      # 通知コンテキスト（リポジトリ名に合わせ複数形）
 │  │  ├─ presentation/    # NotificationPage, NotificationList
-│  │  ├─ application/     # loadNotificationsUseCase
-│  │  ├─ domain/          # NotificationItem, NotificationRule
-│  │  └─ infrastructure/  # /v1/api/notifications client
+│  │  ├─ application/     # loadNotificationsUseCase（任意）
+│  │  ├─ domain/          # NotificationItem, NotificationRule（任意）
+│  │  └─ infrastructure/  # /v1/api/notifications client（任意）
 │  └─ admin/              # 管理コンテキスト
 │     ├─ presentation/    # AdminPage, AccountCreateForm, PolicyDictionaryForm
-│     ├─ application/     # createAccountUseCase, updatePolicyDictionaryUseCase
-│     ├─ domain/          # AccountRoleRule, DictionaryPolicy
-│     └─ infrastructure/  # admin APIs client
-└─ app-shell/             # レイアウトとルーティング
+│     ├─ application/     # createAccountUseCase, updatePolicyDictionaryUseCase（任意）
+│     ├─ domain/          # AccountRoleRule, DictionaryPolicy（任意）
+│     └─ infrastructure/  # admin APIs client（任意）
+└─ app-shell/             # レイアウトとルーティング（PoC では src/app に相当）
 ```
 
 ## 3. コンポーネント仕様（主要 / DDD対応）
 
 ### SubmitPage（submission/presentation）
 - 責務: 投稿入力の完了と送信（UI オーケストレーション）
-- 依存: `submitMessageUseCase` / `transcribeVoiceUseCase`
+- 依存（論理）: `submitMessageUseCase` / `transcribeVoiceUseCase`。**PoC 実装**では同等の処理を `SubmitForm` 内で `monkuFetch` により呼び出してよい（§2.1）
 - 状態:
   - `selectedTopicId`
   - `newTopicLabel`
@@ -79,16 +107,16 @@ App
 
 ### DashboardPage（dashboard/presentation）
 - 責務: 閲覧者/管理者向け可視化
-- 依存: `loadDashboardSummaryUseCase`
+- 依存（論理）: `loadDashboardSummaryUseCase`。**PoC 実装**では `DashboardPanel` + `monkuFetch` でよい（§2.1）
 - 表示:
   - topic 別件数
   - 改善提案カード（topic 単位、根拠付き）
 - ロール:
   - 投稿者はアクセス不可
 
-### NotificationList（notification/presentation）
+### NotificationList（notifications/presentation）
 - 責務: 通知表示
-- 依存: `loadNotificationsUseCase`
+- 依存（論理）: `loadNotificationsUseCase`。**PoC 実装**では `NotificationList` + `monkuFetch` でよい（§2.1）
 - ルール:
   - 受信対象は閲覧者・管理者
   - 投稿者は画面非表示
@@ -96,7 +124,7 @@ App
 
 ### AccountCreateForm（admin/presentation）
 - 責務: アカウント追加
-- 依存: `createAccountUseCase`
+- 依存（論理）: `createAccountUseCase`。**PoC 実装**では `AdminPanel` 内のフォーム + `monkuFetch` でよい（§2.1）
 - バリデーション:
   - メール形式
   - ロール指定必須
@@ -112,7 +140,7 @@ App
 | VoiceRecorder | `POST /v1/api/voice/transcribe`（任意） | 音声→テキスト |
 | DashboardPage | `GET /v1/api/dashboard/summary` | 集計取得 |
 | MessageListPanel | `GET /v1/api/messages` | 投稿一覧 |
-| NotificationPage | `GET /v1/api/notifications` | 通知一覧 |
+| NotificationList | `GET /v1/api/notifications` | 通知一覧 |
 
 ## 5. UI バリデーション方針
 
@@ -128,3 +156,10 @@ App
 3. 音声時は文字起こし・サマリーを確認編集する。
 4. 投稿送信後、閲覧者/管理者のダッシュボード・通知に反映される。
 
+---
+
+## 7. 変更履歴
+
+| 日付 | 内容 |
+|------|------|
+| 2026-05-09 | §2.1 を追加。論理ツリーと PoC 実装（`src/app`・`src/lib`・集約された `src/application` 等）の差を **意図的な許容**として明記。`notification` を `notifications` に統一（実装パスに合わせる）。§2.2 を論理ツリーとして再掲。 |
