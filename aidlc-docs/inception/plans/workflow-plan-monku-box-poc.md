@@ -1,6 +1,6 @@
 # Workflow Plan：文句箱（モンクボックス）PoC
 
-**前提**: `inception/requirements/requirement-verification-questions.md` は 2026-05-07 承認済み。正本は同ファイルの `[Answer]:` と冒頭の PoC スコープ外明記（監査・運用監視・拡張性など）。
+**前提**: `inception/requirements/requirement-verification-questions.md` は 2026-05-07 承認済み。正本は同ファイルの `[Answer]:` と冒頭の PoC スコープ外明記（監査・運用監視など）。**2026-05-08 追記**: インフラ構築および通信方式（SOAP/REST/gRPC 等）は PoC で深く確定せず拡張しやすい実装とし、**JSON を中心**とする節を追加済み。
 
 ## 推奨フェーズ（Inception → Construction）
 
