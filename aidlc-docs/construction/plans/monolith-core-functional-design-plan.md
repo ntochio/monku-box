@@ -10,6 +10,8 @@
 - [x] 成果物を作成する（business-logic-model.md / business-rules.md / domain-entities.md / frontend-components.md）
 - [x] 整合性チェックを実施する（Application Design・要件確認書との整合）
 
+**要件確認書（2026-05-08 追記）**: 「インフラ構築および通信方式」— PoC でインフラ・通信標準を深く確定しない／**JSON 中心**／拡張しやすい境界。成果物 `business-rules.md` §9 等で反映。
+
 ---
 
 ## 確認質問（[Answer] を埋めてください）
