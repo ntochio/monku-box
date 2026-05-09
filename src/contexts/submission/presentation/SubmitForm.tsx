@@ -23,8 +23,8 @@ export function SubmitForm({ role }: { role: Role }) {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [topicId, setTopicId] = useState("");
   const [newTopicLabel, setNewTopicLabel] = useState("");
-  const [body, setBody] = useState("");
   const [transcript, setTranscript] = useState("");
+  const voiceUsedRef = useRef(false);
   const [interim, setInterim] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
@@ -84,6 +84,7 @@ export function SubmitForm({ role }: { role: Role }) {
       const { finalText, interimText } = parseRecognitionResults(ev);
       setInterim(interimText);
       if (finalText) {
+        voiceUsedRef.current = true;
         setTranscript((prev) => mergeVoiceTranscript(prev, finalText, appendVoice));
         setInterim("");
         setStatus(
@@ -123,9 +124,9 @@ export function SubmitForm({ role }: { role: Role }) {
 
   const submit = async () => {
     setStatus(null);
-    const text = transcript || body;
-    if (!text.trim()) {
-      setStatus("本文（または音声の文字起こし）を入力してください。");
+    const text = transcript.trim();
+    if (!text) {
+      setStatus("文字起こし欄に投稿内容を入力してください（音声の結果を反映するか、直接テキスト入力）。");
       return;
     }
     const tid = topicId || undefined;
@@ -140,7 +141,7 @@ export function SubmitForm({ role }: { role: Role }) {
         topicId: tid || undefined,
         topicLabel: tlabel || undefined,
         body: text,
-        inputType: transcript ? "voice" : "text",
+        inputType: voiceUsedRef.current ? "voice" : "text",
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -149,7 +150,7 @@ export function SubmitForm({ role }: { role: Role }) {
       return;
     }
     setStatus("投稿しました。");
-    setBody("");
+    voiceUsedRef.current = false;
     setTranscript("");
     setInterim("");
     setNewTopicLabel("");
@@ -200,20 +201,11 @@ export function SubmitForm({ role }: { role: Role }) {
           data-testid="submit-new-topic-input"
         />
       </label>
-      <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">本文（テキスト）</span>
-        <textarea
-          className="min-h-[100px] rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm shadow-sm dark:border-zinc-600 dark:bg-zinc-950"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          data-testid="submit-body-textarea"
-        />
-      </label>
 
       <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
         <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">音声入力（ブラウザ Web Speech API）</span>
         <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-          Chrome / Edge 推奨。HTTPS または localhost でマイク許可が必要です。確定した認識結果は下の「文字起こし」に入ります（送信前に編集可能）。
+          Chrome / Edge 推奨。HTTPS または localhost でマイク許可が必要です。確定した認識結果は下の欄に入ります。テキストのみの投稿も同じ欄に直接入力できます（いずれも送信前に編集可能）。
         </p>
         <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
           <input
@@ -254,11 +246,18 @@ export function SubmitForm({ role }: { role: Role }) {
         ) : null}
         <label className="mt-4 flex flex-col gap-1">
           <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">文字起こし（送信前に編集可）</span>
+          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+            音声の確定結果が入ります。テキストだけで送る場合も、この欄に入力してください。
+          </p>
           <textarea
             className="min-h-[100px] rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm dark:border-zinc-600 dark:bg-zinc-950"
             value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
-            placeholder="音声の結果がここに入ります。テキストのみで投稿する場合は空のままでも構いません。"
+            onChange={(e) => {
+              const v = e.target.value;
+              setTranscript(v);
+              if (v === "") voiceUsedRef.current = false;
+            }}
+            placeholder="ここに投稿本文を入力するか、音声入力の結果を反映してください。"
             data-testid="submit-transcript-textarea"
           />
         </label>
