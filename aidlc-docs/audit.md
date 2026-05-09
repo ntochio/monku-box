@@ -518,3 +518,39 @@ Functional Designに移ってください"
 **Context**: Construction / Build and Test — AGENTS.md の「Ready to proceed to Operations stage?」への明示承認
 
 ---
+
+## Inception ドキュメント — メッセージ一覧の反映
+
+**Timestamp**: 2026-05-09T04:00:00Z
+
+**User Input**: "メッセージ一覧を新規作成する部分をinceptionフェーズで作成されたドキュメントに混ぜてもらえますか？"
+
+**AI Response**: `unit-of-work-story-map.md` に Story 2.4（メッセージ一覧）を追加。`user-stories/stories.md` に Story 2.4・ペルソナ表・マップ照合・Story 2.2/3.1 文言を更新。`personas.md` に権限・シナリオ・エピック対応を追記。`application-design.md` に UI・RBAC・API 説明・UC-D・変更履歴を追記。`unit-of-work.md` の Unit Scope にメッセージ一覧を追加。
+
+**Context**: Inception 成果物の後追い整合（実装済み `/messages` とドキュメントの同期）
+
+---
+
+## Inception / Construction ドキュメント — ダッシュボード円・棒グラフ
+
+**Timestamp**: 2026-05-09T05:00:00Z
+
+**User Input**: "ダッシュボードでtopicごとの円グラフと、時系列の棒グラフを見れるようにしてください こちらも同様Inceptionフェーズのドキュメントなどにも組み込んでください"
+
+**AI Response**: `buildDashboardSummary` に `messagesByDay` を追加。`TopicPieChart` / `MessagesTimelineBarChart` / `DashboardPanel` を実装。`dashboard-summary.test.ts` を追加。Inception（`unit-of-work-story-map.md`、`stories.md` Story 2.1、`application-design.md`、`unit-of-work.md`、`personas.md`）および Construction（`frontend-components.md`、`code-generation-summary.md`）を更新。`npm run lint` / `test` / `build` 成功。
+
+**Context**: ダッシュボード可視化とドキュメント整合
+
+---
+
+## 音声入力（Web Speech API）実装とドキュメント更新
+
+**Timestamp**: 2026-05-09T06:00:00Z
+
+**User Input**: "音声入力の実装もしてください。同様にドキュメントも更新してください"
+
+**AI Response**: `src/lib/voice-recognition.ts` とテストを追加。`SubmitForm` を Web Speech API（`ja-JP`、`continuous`/`interimResults`、開始/停止、追記モード、詳細エラー文言、アンマウント時停止）に拡張。Inception（`application-design.md` UC-B・Web UI、`unit-of-work-story-map.md` 1.2、`stories.md` 1.2/1.3）および Construction（`frontend-components.md`、`business-rules.md`、`business-logic-model.md`、`code-generation-summary.md`）、`README.md` を更新。`npm run lint` / `test` / `build` 成功。
+
+**Context**: 投稿の音声経路とドキュメント整合
+
+---
