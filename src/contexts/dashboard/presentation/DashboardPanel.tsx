@@ -115,6 +115,14 @@ export function DashboardPanel({ role }: { role: Role }) {
           ))}
         </div>
       </section>
+
+      <p
+        className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400"
+        data-testid="dashboard-aggregation-footnote"
+      >
+        <strong>件数の意味（PoC）</strong>: グラフとリストの数字は、保存された<strong>投稿メッセージの件数</strong>です。同一の人からの連続投稿や、似た内容の投稿があっても 1
+        件ずつ数えます。将来はログインや Slack などで投稿者を識別したうえでの集計や、重複の扱いを検討する予定です（設計はリポジトリ内の Inception 資料「集計・連投・重複」に記載）。
+      </p>
     </div>
   );
 }

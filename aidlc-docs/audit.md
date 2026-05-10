@@ -554,3 +554,52 @@ Functional Designに移ってください"
 **Context**: 投稿の音声経路とドキュメント整合
 
 ---
+
+## Inception フル再見直し + 集計論点（連投・重複）の起票
+
+**Timestamp**: 2026-05-10T10:00:00Z
+
+**User Input**: "inceptionフェーズを1から見直したいです。それと追加で検討したいです。追加内容は以下です
+同一人物の連投や重複投稿などによって集計結果が変わる懸念に関して"
+
+**AI Response**: `inception/plans/inception-full-revisit-plan.md` を新規作成（Workspace から Units までの再確認チェックリスト、集計論点を Requirements のゲートに指定）。`inception/requirements/aggregation-duplicate-and-repeat-submissions.md` を新規作成（現行実装の事実、対策オプション A〜E、決定用設問 Q1〜Q4）。`aidlc-state.md` に「Inception 再見直し」節を追加。Welcome（AI-DLC）に沿った次ステップをユーザーへ提示。
+
+**Context**: Inception 再開／要件追加（同一人物の連投・重複投稿と集計の歪み）
+
+---
+
+## 集計論点（連投・重複）— 回答済み・計画承認
+
+**Timestamp**: 2026-05-10T14:00:00Z
+
+**User Input**: "質問への回答しました。承認します"
+
+**AI Response**: `aggregation-duplicate-and-repeat-submissions.md` を承認済みに更新（§7 完了印、§8 決定サマリ）。`inception-full-revisit-plan.md` のチェックリストを全完了・§5 承認日記入。`aidlc-state.md` の再見直し表を承認済みに更新。`requirement-verification-questions.md` 付録、`service-proposal-monku-box.md` §9、`workflow-plan-monku-box-poc.md` 追認節、`application-design.md` §11 ほか UC-C・コンポーネント表を更新。`stories.md` Story 2.1 に脚注・ロードマップの受け入れを追加。`DashboardPanel` に脚注、`README` スモーク手順を更新。`audit.md` に本エントリを追記。
+
+**Context**: Inception 再見直し／集計・連投・重複の要件 — ユーザー回答と承認の記録
+
+---
+
+## ドキュメント日付の整合（本日＝2026-05-10）
+
+**Timestamp**: 2026-05-10T15:00:00Z
+
+**User Input**: "本日は5月10日です。今修正した部分で日付が待ちがてる部分に関しては修正してください"
+
+**AI Response**: 集計論点・Inception 再見直しまわりの承認日・監査タイムスタンプ・変更履歴を **2026-05-10** に揃えた（`aggregation-duplicate-and-repeat-submissions.md`、`inception-full-revisit-plan.md`、`aidlc-state.md` の再見直し節、要件確認書付録、提案書 §9・変更履歴、`workflow-plan-monku-box-poc.md` 追認節、`application-design.md` 前提・§11 正本・変更履歴、`stories.md`、当該 2 件の監査エントリ）。それ以外の過去監査・2026-05-08 時点の他成果物承認行は履歴として保持。
+
+**Context**: カレンダーに合わせた日付表記の修正
+
+---
+
+## Unit of Work — 集計定義の追記と Inception 完了確認
+
+**Timestamp**: 2026-05-10T16:00:00Z
+
+**User Input**: "unit-of-workの修正もしてもらえますか？その後再度inceptionフェーズが完了しているか確認してください"
+
+**AI Response**: `inception/application-design/unit-of-work.md` にダッシュボードの **生メッセージ件数** 定義、集計ロードマップを **Out of Scope** に追記。**関連ドキュメント**表・**変更履歴**を追加。`aidlc-state.md` 備考の unit-of-work 行に追記済みを反映。AI-DLC の Inception 必須／再見直しチェックはいずれも完了と確認（Operations・Security Baseline は PoC 方針どおり別扱い）。
+
+**Context**: Inception 成果物の仕上げと完了確認
+
+---

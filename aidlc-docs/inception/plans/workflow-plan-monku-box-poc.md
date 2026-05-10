@@ -14,6 +14,12 @@
 - **Functional / NFR**: PoC は機能と最小エラーハンドリング優先。本番 NFR は本番移行時に再オープン。
 - **Security Baseline**: PoC では無効（要件確認書・`aidlc-state.md` に一致）。
 
+## Inception 再見直し・集計論点（2026-05-10 追認）
+
+- **正本**: `inception/requirements/aggregation-duplicate-and-repeat-submissions.md`（§8 決定サマリ）、`inception/plans/inception-full-revisit-plan.md`（承認済み）。
+- **PoC コード**: ダッシュボード集計は **据え置き**（生メッセージ件数）。利用者向けに **脚注・ドキュメント**で制約を明示する。
+- **次期 Construction（バックログ）**: 投稿者の **業務 ID／ログイン**、**Slack 連携**時の識別子、**ユニーク投稿者系 KPI**、**重複投稿**の検知／集計上の扱い — を順次、Functional Design → 実装へ落とす。
+
 ## 承認
 
 - **承認日**: 2026-05-08
