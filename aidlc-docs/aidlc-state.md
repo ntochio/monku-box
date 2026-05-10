@@ -17,6 +17,8 @@
 
 ## Inception Progress
 
+**Inception フェーズ**: **完了**。Workspace Detection、Requirements Analysis、Workflow Planning、User Stories、Application Design、ならびに上記 **Inception 再見直し**（計画・集計論点）はいずれも **完了／承認済み**。下表の Functional Design 以降は **Construction フェーズ**の記録です。
+
 | アーティファクト | ステータス |
 |------------------|------------|
 | Workspace Detection | 完了（グリーンフィールド／ドキュメント中心リポジトリ） |
