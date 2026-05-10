@@ -1,8 +1,9 @@
 # Application Design：文句箱（モンクボックス）PoC
 
 **ドキュメント種別**: インセプション／Application Design（コンポーネント境界・サービス層・依存関係の高水準設計）  
-**ステータス**: ドラフト（Construction の Functional Design で業務ルールを詳細化する）  
-**前提**: `inception/requirements/service-proposal-monku-box.md`（承認済み）、`inception/requirements/requirement-verification-questions.md`（承認済み）、`inception/plans/workflow-plan-monku-box-poc.md`
+**ステータス**: **承認済み**（2026-05-08 — `aidlc-docs/aidlc-state.md` と一致）  
+**詳細ルール・スキーマの正本**: Construction の `construction/monolith-core/functional-design/` および実装（`src/`）。本書はインセプション段階の境界・フロー・RBAC・API 意図を示す。  
+**前提**: `inception/requirements/service-proposal-monku-box.md`（承認済み）、`inception/requirements/requirement-verification-questions.md`（承認済み）、`inception/plans/workflow-plan-monku-box-poc.md`（承認済み）。**集計・連投・重複**は `aggregation-duplicate-and-repeat-submissions.md`（**2026-05-10** 承認）を参照。
 
 ---
 
@@ -23,7 +24,7 @@
 | 形態 | **Next.js モノリス**（UI + Route Handlers / Server Actions + 永続化） |
 | 投稿チャネル | **Web が当面の主軸**。Slack 等は将来拡張 |
 | API の表現 | **JSON を中心**（`/v1/api/...` のリクエスト/レスポンス）。SOAP/gRPC 等の全面採用は本番移行時に再オープン |
-| 永続化 | PoC では **SQLite 等の軽量 RDB** またはチーム選定の単一ストア（要件確認書の DB 設問に追随） |
+| 永続化 | 要件上は **SQLite 等の軽量 RDB** も選択肢。**現行 PoC 実装**は **`MONKU_DATA_DIR` 配下の JSON ファイル**（`json-store`）— Functional Design / コードを正とする |
 | AI | 要約・トーン調整・（データ分析系の）補助。**PoC ではブラックリスト等のフォールバックと併用しうる**（要件回答に整合） |
 
 ```text
@@ -45,14 +46,14 @@
 
 | コンポーネント | 責務（高水準） |
 |----------------|----------------|
-| **Web UI — 投稿** | topic 必須・本文／**Web Speech API による音声入力**（追記/上書き、停止、送信前編集）・エラー表示（質問 102〜110 と整合） |
+| **Web UI — 投稿** | topic 必須・**単一の「文字起こし（送信前に編集可）」欄**（**直接テキスト入力**と**Web Speech API の確定結果**の両方を受け付け、送信前に編集）・追記/上書きモード・認識停止・エラー表示（質問 102〜110 と整合） |
 | **Web UI — メッセージ一覧** | 閲覧者・管理者向け、投稿本文の時系列一覧、topic 絞り込み（`GET /v1/api/messages`） |
-| **Web UI — ダッシュボード** | **topic 別件数の円グラフ**・**UTC 日別投稿件数の棒グラフ**・件数リスト・改善提案（優先度の機械付与はしない） |
+| **Web UI — ダッシュボード** | **topic 別件数の円グラフ**・**UTC 日別投稿件数の棒グラフ**・件数リスト・改善提案。件数は **受理メッセージの生カウント**（§11）。利用者向け脚注で制約を明示 |
 | **Web UI — 通知** | 閲覧者向けアプリ内通知一覧（質問 111〜119・125 と整合） |
 | **API / Server 層** | 認可チェック、**Policy 呼び出し**、トランザクション境界、HTTP エラー整形（質問 75〜82） |
 | **Message Service** | 投稿受理、匿名内部 ID 付与、マスキング適用、保存、一覧取得 |
 | **Topic Service** | topic CRUD、投稿との紐付け管理、**投稿者・閲覧者・管理者**による topic 追加 |
-| **Analysis Service** | 集計・トレンド・（topic 単位の）改善提案生成のトリガー・結果参照 |
+| **Analysis Service** | 集計・トレンド・（topic 単位の）改善提案生成のトリガー・結果参照。**PoC** の KPI は **生メッセージ件数** ベース（§11）。ロードマップでユニーク投稿者・重複除外を検討 |
 | **Notification Service** | イベント検知→通知レコード生成→閲覧者への表示 |
 | **Voice / STT Adapter** | ブラウザ／API 経由の音声→テキスト（失敗時フォールバック） |
 | **Content Policy Engine** | 禁止語・マスキングルール適用、**投稿バリデーション**（ルール中心、AI は補助） |
@@ -76,7 +77,7 @@
 | エンティティ | 主な属性（案） | 備考 |
 |--------------|----------------|------|
 | **Topic** | id, label, created_at, archived_at? | 1 投稿 1 topic 必須 |
-| **Message** | id, topic_id, body_raw, body_display, anonymous_submitter_id, input_type, created_at | 表示用と集計は同一ソース（質問 65） |
+| **Message** | id, topic_id, body_raw, body_display, anonymous_submitter_id, input_type, created_at | 表示用と集計は同一ソース（質問 65）。**PoC** の集計は **メッセージ行を 1 件ずつ数える**（§11）。将来は業務 ID／Slack 等で `anonymous_submitter_id` を安定化し、重複検知を検討 |
 | **Notification** | id, type, payload_ref, recipient_role?, read_at?, created_at | 閲覧者向け（質問 125） |
 | **AnalysisSnapshot**（任意） | topic_id, period, metrics_json, suggestions_json, created_at | 都度集計 vs スナップショットは質問 143 に追随 |
 
@@ -106,7 +107,7 @@
 
 | メソッド | パス（案） | 説明 |
 |----------|------------|------|
-| POST | `/v1/api/messages` | 匿名投稿（topic_id 必須、音声経路は同一または事前 STT） |
+| POST | `/v1/api/messages` | 匿名投稿（**既存 topicId または新規 topicLabel** のいずれか必須。本文はテキスト経路・音声経路いずれも同一ペイロード） |
 | GET | `/v1/api/messages` | 一覧（閲覧者・管理者、クエリで topic 等）。**メッセージ一覧画面**の主データ源 |
 | GET/POST | `/v1/api/topics` | 一覧・追加 |
 | GET | `/v1/api/dashboard/summary` | `topicCounts`、**`messagesByDay`**（UTC 日付ごとの全メッセージ件数、昇順）、改善提案（suggestions）など KPI 用集約 |
@@ -131,22 +132,23 @@
 
 ## 9. 主要ユースケース（テキストフロー）
 
-**UC-A 投稿（テキスト）**  
-1. UI が本文と topic 情報（既存選択または新規追加）を送信  
+**UC-A 投稿（テキストのみ）**  
+1. UI が **文字起こし欄に直接入力した本文**と topic 情報（既存選択または新規追加）を送信（`inputType: text`）  
 2. API が認可し、必要に応じて Topic を追加して紐付ける（topic 存在検証は行わない）  
 3. Policy がバリデーションとマスキング等を適用  
 4. Message を保存、Analysis／Notification を必要なら更新  
 
-**UC-B 投稿（音声）**  
+**UC-B 投稿（音声経由）**  
 1. UI が **Web Speech API**（日本語）で認識セッションを開始し、ユーザーが**認識を停止**するまで発話を受け付ける（中間結果を表示してよい）  
-2. 確定テキストを編集可能欄に反映する（**投稿前の追認**）。必要に応じ複数回の発話を**追記**または**上書き**で蓄積する（要件 Q106）  
-3. 以降は UC-A と合流（`POST /v1/api/messages`、`inputType: voice`）。**サーバ経由 STT**（`/v1/api/voice/transcribe`）は PoC では使用せず 501 のまま差し替え用とする
+2. 確定テキストを **同一の文字起こし欄**に反映する（**投稿前の追認**・編集可能）。必要に応じ複数回の発話を**追記**または**上書き**で蓄積する（要件 Q106）  
+3. 以降は UC-A と合流（`POST /v1/api/messages`、**実際に音声で確定文が取り込まれた場合** `inputType: voice`）。**サーバ経由 STT**（`/v1/api/voice/transcribe`）は PoC では使用せず 501 のまま差し替え用とする
 
 **UC-C ダッシュボード閲覧**  
 1. 閲覧者または管理者がサマリ API を取得  
-2. **topic 別件数を円グラフおよび一覧**で表示する  
-3. **日別投稿件数（UTC 暦日）を棒グラフ**で表示する  
-4. topic 別件数・トレンド・改善提案（topic 単位）を参照する（定期レポートはなし）
+2. **topic 別件数を円グラフおよび一覧**で表示する（**各件数 = 当該 topic のメッセージ件数の合計**）  
+3. **日別投稿件数（UTC 暦日）を棒グラフ**で表示する（**各日 = その日に作成されたメッセージ件数**）  
+4. topic 別件数・トレンド・改善提案（topic 単位）を参照する（定期レポートはなし）  
+5. 画面で **集計の解釈**（生件数であり、同一人物の連投・重複は PoC では別扱いしない旨）を利用者に示す（脚注等 — `aggregation-duplicate-and-repeat-submissions.md` と整合）
 
 **UC-D メッセージ一覧閲覧**  
 1. 閲覧者または管理者が一覧 API を取得（任意で topic で絞り込み）  
@@ -154,11 +156,29 @@
 
 ---
 
-## 10. 次アクション（設計の深化）
+## 10. 参照・更新方針（Construction 完了後）
 
-1. **Functional Design（Construction）**: 各 API の入出力スキーマ、エラーコード、トランザクション境界、通知イベント種別の確定。  
-2. **User Stories（任意）**: 音声入力・通知・分析の受け入れ基準を跨ロールで記述。  
-3. 必要に応じ本書を分割: `components.md` / `component-methods.md` / `services.md` / `component-dependency.md`（AI-DLC 完全準拠時）。
+- **Functional / NFR / Infrastructure Design / Code Generation** は `construction/monolith-core/` および `aidlc-docs/aidlc-state.md` を正とする（本書の「次アクション」は完了済み）。  
+- 実装や API の確定値が本書と差異を生じた場合は、**Construction 成果物とコードを先に更新**し、本書は高水準の意図が保たれる範囲で追随する。  
+- AI-DLC でコンポーネントを細分化する場合のみ、本書を `components.md` 等へ分割することを検討する。
+
+---
+
+## 11. 集計指標・投稿者識別（PoC とロードマップ）
+
+**正本（設問・回答・承認）**: `inception/requirements/aggregation-duplicate-and-repeat-submissions.md`（§6・§8）。**承認日**: 2026-05-10。
+
+### 11.1 PoC（現行）
+
+- ダッシュボードの **topic 別件数**・**日別件数**・改善提案の **根拠件数**は、いずれも **永続化された `Message` レコードを 1 行 1 カウント**とする。  
+- **同一人物の連投**・**同一／類似内容の複数投稿**は、**検知も集計からの除外もしない**（歪みは **既知の制約**）。  
+- 利用者には **脚注・ヘルプ・README** で上記を明示する（Q1: PoC では高度な KPI を表現しきれないためドキュメントで補う、という承認に従う）。
+
+### 11.2 ロードマップ（承認済み・未実装）
+
+- **同一人物**の技術的定義の目標: **業務上の本人**（**ログイン／職員 ID** 等）。**Slack 連携**時は **Slack ID** 等の活用を検討（Q2=C）。  
+- **集計の拡張（Q1=D）**: 将来、**安定した投稿者識別子**に基づく KPI（例: ユニーク投稿者数、加重）および **重複内容の扱い**を **両方**検討する。  
+- **重複投稿（Q3=A）**: PoC では必須とせず **将来検討**。
 
 ---
 
@@ -178,3 +198,5 @@
 | 2026-05-08 | メッセージ一覧（閲覧者・管理者）をストーリーマップ・画面責務・RBAC・UC に追記 |
 | 2026-05-09 | ダッシュボードに topic 別**円グラフ**・UTC 日別**棒グラフ**を明記（API `messagesByDay`、UC-C、コンポーネント表） |
 | 2026-05-09 | UC-B・Web UI 投稿を **Web Speech API 実装**に合わせ更新（サーバ transcribe は任意・501） |
+| 2026-05-09 | ステータスを **承認済み** に更新（`aidlc-state.md` と一致）。永続化に **現行 JSON ストア実装**を注記。投稿 UI を **文字起こし欄への統合**（テキスト直接入力／音声反映）に合わせ UC-A・UC-B・コンポーネント表を更新。§10 を Construction 完了後の参照方針に差し替え |
+| 2026-05-10 | §11 を追加（集計の生件数定義、連投・重複の既知制約、業務 ID／Slack・重複扱いのロードマップ）。UC-C・ダッシュボード・Message・Analysis の行を整合。**前提**に `aggregation-duplicate-and-repeat-submissions.md`（2026-05-10 承認）への参照を追加 |
